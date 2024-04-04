@@ -30,7 +30,7 @@ const stylelintConfig = {
 
 const codeLint = async (options) => {
   const eslint = new ESLint();
-  const files = danger.git.created_files.concat(danger.git.modified_files);
+  const files = [...new Set(danger.git.created_files.concat(danger.git.modified_files))];
   
 
   if (options.js) {
@@ -41,7 +41,6 @@ const codeLint = async (options) => {
       const resultText = formatter.format(results);
       if (results.some(result => result.errorCount > 0)) {
         fail(`ESLint failed for ${file}`);
-        console.log(resultText);
         lintErrors = true;
       }
       else {
@@ -59,7 +58,6 @@ const codeLint = async (options) => {
       });
       if (result.errored) {
         fail(`Stylelint failed for ${file}`);
-        console.log(result.report);
         lintErrors = true;
       }
       else {
@@ -75,10 +73,5 @@ if (lintErrors) {
   }
 };
 
-
-
-(async () => {
-  await codeLint({ js: true, css: true, scss: true });
-})();
 
 module.exports = { codeLint };
