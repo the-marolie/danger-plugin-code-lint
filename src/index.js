@@ -3,7 +3,7 @@ const stylelint = require('stylelint');
 
 const codeLint = async (options) => {
   const eslint = new ESLint();
-  const files = global.danger.git.created_files.concat(global.danger.git.modified_files);
+  const files = danger.git.created_files.concat(danger.git.modified_files);
 
   if (options.js) {
     const jsFiles = files.filter(path => path.endsWith('.js'));
@@ -12,7 +12,7 @@ const codeLint = async (options) => {
       const formatter = await eslint.loadFormatter('stylish');
       const resultText = formatter.format(results);
       if (results.some(result => result.errorCount > 0)) {
-        global.danger.fail(`ESLint failed for ${file}`);
+        danger.fail(`ESLint failed for ${file}`);
         console.log(resultText);
       }
     }
@@ -23,7 +23,7 @@ const codeLint = async (options) => {
     for (const file of cssFiles) {
       const result = await stylelint.lint({ files: file });
       if (result.errored) {
-        global.danger.fail(`Stylelint failed for ${file}`);
+        danger.fail(`Stylelint failed for ${file}`);
         console.log(result.output);
       }
     }
