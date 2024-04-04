@@ -22,16 +22,16 @@ global.danger = {
   }));
 
 // Import the function to be tested
-const { lintCode } = require('./index');
+const { codeLint } = require('./index');
 
-describe('lintCode', () => {
+describe('codeLint', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
 
   it('should lint JavaScript files when options.js is true', async () => {
     const options = { js: true, css: false, scss: false };
-    await lintCode(options);
+    await codeLint(options);
 
     expect(eslint.CLIEngine).toHaveBeenCalledTimes(1);
     expect(eslint.CLIEngine).toHaveBeenCalledWith();
@@ -50,7 +50,7 @@ describe('lintCode', () => {
 
   it('should lint CSS and SCSS files when options.css or options.scss is true', async () => {
     const options = { js: false, css: true, scss: true };
-    await lintCode(options);
+    await codeLint(options);
 
     expect(stylelint.lint).toHaveBeenCalledTimes(2);
     expect(stylelint.lint).toHaveBeenCalledWith({ files: 'file2.css' });
@@ -63,7 +63,7 @@ describe('lintCode', () => {
 
   it('should not lint any files when options.js, options.css, and options.scss are all false', async () => {
     const options = { js: false, css: false, scss: false };
-    await lintCode(options);
+    await codeLint(options);
 
     expect(eslint.CLIEngine).not.toHaveBeenCalled();
     expect(stylelint.lint).not.toHaveBeenCalled();

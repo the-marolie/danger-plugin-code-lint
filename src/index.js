@@ -5,7 +5,6 @@
  * @param {boolean} options.css - Whether to lint CSS files.
  * @param {boolean} options.scss - Whether to lint SCSS files.
  */
-const { danger, fail } = require('danger');
 const eslint = require('eslint');
 const stylelint = require('stylelint');
 
