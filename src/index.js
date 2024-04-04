@@ -15,6 +15,9 @@ const codeLint = async (options) => {
         danger.fail(`ESLint failed for ${file}`);
         console.log(resultText);
       }
+      else {
+        danger.message(`ESLint passed for ${file}`);
+      }
     }
   }
 
@@ -25,6 +28,10 @@ const codeLint = async (options) => {
       if (result.errored) {
         danger.fail(`Stylelint failed for ${file}`);
         console.log(result.output);
+      }
+
+      else {
+        danger.message(`Stylelint passed for ${file}`);
       }
     }
   }
