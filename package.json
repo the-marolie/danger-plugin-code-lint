@@ -1,0 +1,34 @@
+{
+  "name": "danger-plugin-code-lint",
+  "version": "1.0.1",
+  "description": "A dangerjs plugin to lint js & stylesheets",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/the-marolie/danger-plugin-code-lint.git"
+  },
+  "keywords": [
+    "lint",
+    "dangerjs",
+    "ci/cd",
+    "js",
+    "scss",
+    "css"
+  ],
+  "author": "Akshith Marolie",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/the-marolie/danger-plugin-code-lint/issues"
+  },
+  "homepage": "https://github.com/the-marolie/danger-plugin-code-lint#readme",
+  "dependencies": {
+    "danger": "^11.3.1",
+    "eslint": "^8.57.0",
+    "jest": "^29.7.0",
+    "stylelint": "^16.3.1",
+    "stylelint-scss": "^6.2.1"
+  }
+}
