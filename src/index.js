@@ -12,11 +12,11 @@ const codeLint = async (options) => {
       const formatter = await eslint.loadFormatter('stylish');
       const resultText = formatter.format(results);
       if (results.some(result => result.errorCount > 0)) {
-        danger.fail(`ESLint failed for ${file}`);
+        fail(`ESLint failed for ${file}`);
         console.log(resultText);
       }
       else {
-        danger.message(`ESLint passed for ${file}`);
+        message(`ESLint passed for ${file}`);
       }
     }
   }
@@ -26,12 +26,12 @@ const codeLint = async (options) => {
     for (const file of cssFiles) {
       const result = await stylelint.lint({ files: file });
       if (result.errored) {
-        danger.fail(`Stylelint failed for ${file}`);
+        fail(`Stylelint failed for ${file}`);
         console.log(result.output);
       }
 
       else {
-        danger.message(`Stylelint passed for ${file}`);
+        message(`Stylelint passed for ${file}`);
       }
     }
   }
