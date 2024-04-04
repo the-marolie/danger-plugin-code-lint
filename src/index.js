@@ -1,6 +1,8 @@
 const { ESLint } = require('eslint');
 const stylelint = require('stylelint');
+const fs = require('fs');
 
+let lintErrors = false;
 const stylelintConfig = {
     rules: {
       "at-rule-no-unknown": null,
@@ -10,40 +12,26 @@ const stylelintConfig = {
     }
   };
 
-const fixLintingErrors = async () => {
-  // Implement the code to fix linting errors and commit changes to the PR
-  const eslint = new ESLint();
-  const files = danger.git.created_files.concat(danger.git.modified_files);
-
-  // Fix JavaScript linting errors
-  const jsFiles = files.filter(path => path.endsWith('.js'));
-  for (const file of jsFiles) {
-    const results = await eslint.lintFiles(file);
-    const fixableResults = results.filter(result => result.fixable);
-    if (fixableResults.length > 0) {
-      await ESLint.outputFixes(fixableResults);
+  const checkLintingScript = () => {
+    console.log('checkLintingScript')
+    try {
+      // Read the package.json file
+      const packageJSON = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+  
+      // Check if "lint" script is present
+      if (packageJSON && packageJSON.scripts && packageJSON.scripts.lint) {
+        markdown('## Linting Script Found');
+        markdown('You can run the linting script using `npm run lint`');
+      }
+    } catch (error) {
+      console.error('Error reading package.json:', error);
     }
-  }
-
-  // Fix CSS/SCSS linting errors
-  const cssFiles = files.filter(path => path.endsWith('.css') || path.endsWith('.scss'));
-  for (const file of cssFiles) {
-    const result = await stylelint.lint({ files: file, fix: true });
-    if (!result.errored) {
-      // Write fixed content back to file
-      await danger.github.utils.createOrUpdateFile(file, result.output);
-    }
-  }
-
-  // Commit changes to the PR
-  await danger.git.exec("git", ["add", ...jsFiles, ...cssFiles]);
-  await danger.git.exec("git", ["commit", "-m", "Fix linting errors"]);
-};
+  };
 
 const codeLint = async (options) => {
   const eslint = new ESLint();
   const files = danger.git.created_files.concat(danger.git.modified_files);
-  let lintErrors = false;
+  
 
   if (options.js) {
     const jsFiles = files.filter(path => path.endsWith('.js'));
@@ -71,7 +59,7 @@ const codeLint = async (options) => {
       });
       if (result.errored) {
         fail(`Stylelint failed for ${file}`);
-        console.log(result.output);
+        console.log(result.report);
         lintErrors = true;
       }
       else {
@@ -79,21 +67,15 @@ const codeLint = async (options) => {
       }
     }
   }
-
-  if (lintErrors) {
-    const fixButtonMarkdown = `
-  <button style="background-color: #007bff; color: #fff; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;" onclick="fixLintingErrors()">Fix Linting Errors</button>
-  <script>
-    async function fixLintingErrors() {
-      await fixLintingErrors();
-      // Provide feedback to the user
-      message("Linting errors fixed and committed successfully!");
-    }
-  </script>
-`;
-markdown(fixButtonMarkdown);
+  // if there are errors, show a markdown message explaining how to fix them
+if (lintErrors) {
+    markdown('## Linting Errors Found');
+    markdown('Please fix the linting errors and push the changes again.');
+    checkLintingScript();
   }
 };
+
+
 
 (async () => {
   await codeLint({ js: true, css: true, scss: true });
