@@ -5,7 +5,8 @@
   "main": "dist/index.js",
   "scripts": {
     "test": "jest",
-    "build": "babel src --out-dir dist"
+    "build": "babel src --out-dir dist",
+    "watch": "babel src --out-dir dist --watch"
   },
   "repository": {
     "type": "git",
