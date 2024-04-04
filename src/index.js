@@ -1,25 +1,19 @@
-/**
- * Lints the code based on the provided options.
- * @param {Object} options - The linting options.
- * @param {boolean} options.js - Whether to lint JavaScript files.
- * @param {boolean} options.css - Whether to lint CSS files.
- * @param {boolean} options.scss - Whether to lint SCSS files.
- */
-const eslint = require('eslint');
+const { ESLint } = require('eslint');
 const stylelint = require('stylelint');
 
 const codeLint = async (options) => {
-  const linter = new eslint.CLIEngine();
+  const eslint = new ESLint();
   const files = global.danger.git.created_files.concat(global.danger.git.modified_files);
 
   if (options.js) {
     const jsFiles = files.filter(path => path.endsWith('.js'));
     for (const file of jsFiles) {
-      const report = linter.executeOnFiles([file]);
-      const formatter = linter.getFormatter();
-      if (report.errorCount > 0) {
+      const results = await eslint.lintFiles(file);
+      const formatter = await eslint.loadFormatter('stylish');
+      const resultText = formatter.format(results);
+      if (results.some(result => result.errorCount > 0)) {
         global.danger.fail(`ESLint failed for ${file}`);
-        console.log(formatter(report.results));
+        console.log(resultText);
       }
     }
   }
